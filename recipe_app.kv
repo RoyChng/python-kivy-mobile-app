@@ -1,0 +1,812 @@
+<RecipeLarge@RelativeLayout>:
+    source: ""
+    title: ""
+    category: ""
+    recipe_id: ""
+    size_hint: None, 1
+    width: 300
+
+    MDSmartTile:
+        size_hint: 1, 1 
+        pos_hint: {"top": 1}
+        source: root.source
+        radius: app.scale(16)
+        lines: 2
+        box_radius: [0, 0, app.scale(16), app.scale(16)]
+        box_color: 0, 0, 0, .8
+        fit_mode: "cover"
+        on_press: app.load_recipe_detail(root.recipe_id, "home")
+
+        MDIconButton:
+            icon: "food-fork-drink"
+            theme_icon_color: "Custom"
+            icon_color: 1, 1, 1, 1
+            _no_ripple_effect: True
+
+        TwoLineListItem:
+            text: root.title
+            secondary_text: root.category
+            pos_hint: {"center_y": .5}
+            _no_ripple_effect: True
+
+<RecipeMedium>:
+    source: ""
+    title: ""
+    category: ""
+    recipe_id: ""
+    from_screen: ""
+    size_hint: 1, 1
+
+    MDSmartTile:
+        size_hint: 1, 1 
+        pos_hint: {"top": 1}
+        source: root.source
+        radius: app.scale(16)
+        # lines: 2
+        box_radius: [0, 0, app.scale(16), app.scale(16)]
+        box_color: 0, 0, 0, .8
+        fit_mode: "cover"
+        on_press: app.load_recipe_detail(root.recipe_id, root.from_screen)
+
+
+        MDLabel:
+            size_hint_y: 0.40
+            text: root.title
+            markup: True
+            color: 1, 1, 1, 1
+            pos_hint: {"center_y": .5}
+        # TwoLineListItem:
+        #     text: root.title
+        #     secondary_text: root.category
+        #     pos_hint: {"center_y": .5}
+        #     _no_ripple_effect: True
+
+
+<RecipeIngredient>:
+    img: ""
+    title: ""
+    BoxLayout:
+        orientation: "vertical"
+        spacing: app.scale(20)
+
+        FitImage:
+            source: root.img
+            size_hint: None, None
+            size: app.scale(50), app.scale(50)
+            fit_mode: "contain"
+
+        MDLabel:
+            text_size: self.size
+            halign: "left"
+            valign: "center"
+            font_size: app.scale(13)
+            text: root.title
+            color: "#808080"
+
+<RecipeStep>:
+    text: ""
+    Label:
+        id: label
+        markup: True
+        size_hint_y: None
+        text_size: self.width, None
+        height: self.texture_size[1]
+        halign: "left"
+        valign: "center"
+        font_size: app.scale(18)
+        text: root.text
+        color: "#5A1400"
+        on_texture_size: app.update_layout_height()
+
+<NoResults>:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: 1, None
+        height: self.minimum_height
+        pos_hint: {"top": 1}
+        spacing: app.scale(80)
+        padding: [0, app.scale(100), 0, 0]
+
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "center"
+            Image:
+                source: "images/not-found-img.png"
+                size_hint: None, None
+                size: app.scale(200), app.scale(104.205)
+
+        MDLabel:
+            text_size: self.size
+            halign: "center"
+            valign: "top"
+            bold: True
+            font_size: app.scale(20)
+            text: 'No recipes found!'
+            color: 0.3529, 0.07843, 0, 1
+
+        # BoxLayout:
+        #     orientation: "vertical"
+        #     padding: [0, app.scale(-30), 0, 0]
+        #     MDRaisedButton:
+        #         text: "Back to home"
+        #         size_hint_x: 1
+        #         md_bg_color: 0.3529, 0.078, 0, 1
+        #         text_color: "#ffffff"
+        #         on_press: app.sm.current = 'home'
+
+<HomeScreen>:
+    ScrollView:
+        BoxLayout:
+            orientation: "vertical"
+            pos_hint: {"top": 1}
+            size_hint: (1, None)
+            padding: [app.scale(15), app.scale(20)]
+            height: self.minimum_height
+
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint_x: 1
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: app.scale(10)
+                pos_hint: {"top": 1}
+
+                MDIconButton:
+                    icon: "dice-3"
+                    theme_icon_color: "Custom"
+                    icon_color: "#ffffff"
+                    md_bg_color: "#5A1400"
+                    icon_size: app.scale(19)
+                    pos_hint: {"top": 1.05}
+                    on_press: app.load_random_recipe()
+
+                MDTextField:
+                    id: search_bar
+                    hint_text: "Search Recipes"
+                    size_hint_x: 1
+                    mode: "round"
+                    icon_left: "magnify"
+                    pos_hint: {"top": 1}
+                    on_text_validate: app.load_search_results(root)
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint: 1, None
+                height: app.scale(30)
+                padding: [0, app.scale(40), 0, 0]
+                pos_hint: {"top": 1}
+                MDLabel:
+                    text_size:  self.size
+                    halign: "left"
+                    valign: "top"
+                    bold: True
+                    text: "Featured Recipes"
+                    color: 0.3529, 0.07843, 0, 1
+
+
+            AnchorLayout:
+                anchor_y: "top"
+                size_hint_y: None
+                height: app.scale(240)
+                padding: [0, app.scale(30), 0, app.scale(30)]
+                ScrollView:
+                    do_scroll_x: True
+                    do_scroll_y: False
+                    bar_width: app.scale(5)
+                    size_hint_y: 1.2
+                    BoxLayout:
+                        pos_hint: {"top": 1}
+                        orientation: "horizontal"
+                        size_hint: None, 1
+                        width: (root.width - 40) * 3
+                        spacing: app.scale(20)
+
+                        RecipeLarge:
+                            source: "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg"
+                            title: "[color=#ffffff][b]Spicy Arrabiata Penne[/b][/color]"
+                            category: "[color=#808080][b]Vegetarian[/b][/color]"
+                            recipe_id: "52771"
+                            width: root.width - 60
+
+
+                        RecipeLarge:
+                            source: "https://www.themealdb.com/images/media/meals/ssxvup1511387476.jpg"
+                            title: "[color=#ffffff][b]Peach & Blueberry Grunt[/b][/color]"
+                            category: "[color=#808080][b]Dessert[/b][/color]"
+                            recipe_id: "52862"
+                            width: root.width - 60
+
+
+                        RecipeLarge:
+                            source: "https://www.themealdb.com/images/media/meals/1550442508.jpg"
+                            title: "[color=#ffffff][b]Chocolate Caramel Crispy[/b][/color]"
+                            category: "[color=#808080][b]Dessert[/b][/color]"
+                            recipe_id: "52966"
+                            width: root.width - 60
+
+            BoxLayout:
+                orientation: "vertical"
+                height: app.scale(70)
+                size_hint_y: None
+                pos_hint: {"top": 1}
+                MDLabel:
+                    text_size: self.size
+                    halign: "left"
+                    valign: "middle"
+                    bold: True
+                    text: "Categories"
+                    color: 0.3529, 0.07843, 0, 1
+
+            AnchorLayout:
+                anchor_y: "top"
+                size_hint_y: None
+                height: app.scale(100)
+                ScrollView:
+                    do_scroll_x: True
+                    do_scroll_y: False
+                    bar_width: app.scale(5)
+                    size_hint_y: 1.2
+                    BoxLayout:
+                        orientation: "horizontal"
+                        pos_hint: {"top": 1}
+                        size_hint_x: None
+                        width: self.minimum_width
+
+                        MDIconButton:
+                            icon_size: app.scale(100)
+                            icon:"images/category-pasta.png"
+                            on_press: app.view_category("Pasta")
+                        MDIconButton:
+                            icon_size: app.scale(100)
+                            icon:"images/category-breakfast.png"
+                            on_press: app.view_category("Breakfast")
+                        MDIconButton:
+                            icon_size: app.scale(100)
+                            icon:"images/category-seafood.png"
+                            on_press: app.view_category("Seafood")
+                        MDIconButton:
+                            icon_size: app.scale(100)
+                            icon:"images/category-dessert.png"
+                            on_press: app.view_category("Dessert")
+                        MDIconButton:
+                            icon_size: app.scale(100)
+                            icon:"images/category-vegetarian.png"
+                            on_press: app.view_category("Vegetarian")
+                        MDIconButton:
+                            icon_size: app.scale(100)
+                            icon:"images/category-starter.png"
+                            on_press: app.view_category("Starter")
+
+            BoxLayout:
+                orientation: "vertical"
+                height: app.scale(100)
+                size_hint_y: None
+                pos_hint: {"top": 1}
+                MDLabel:
+                    text_size: self.size
+                    halign: "left"
+                    valign: "middle"
+                    bold: True
+                    text: "Popular Recipes"
+                    color: 0.3529, 0.07843, 0, 1
+
+
+            GridLayout:
+                cols: 2
+                height: self.minimum_height
+                size_hint_y: None
+                spacing: [app.scale(15), app.scale(15)]
+                RecipeMedium:
+                    source: "https://www.themealdb.com/images/media/meals/x0lk931587671540.jpg"
+                    title: "[size=" + str(int(app.scale(11))) + "][color=#ffffff][b] Pizza Express Margherita[/b][/color][/size]"
+                    category: "[size=10][color=#808080][b]Miscellaneous[/b][/color][/size]"
+                    height: app.scale(150)
+                    size_hint_y: None
+                    recipe_id: "53014"
+                    from_screen: "home"
+                RecipeMedium:
+                    source: "https://www.themealdb.com/images/media/meals/wxswxy1511452625.jpg"
+                    title: "[size=" + str(int(app.scale(11))) + "][color=#ffffff][b] Squash Linguine[/b][/color][/size]"
+                    category: "[size=10][color=#808080][b]Vegetarian[/b][/color][/size]"
+                    height: app.scale(150)
+                    size_hint_y: None
+                    recipe_id: "52866"
+                    from_screen: "home"
+                RecipeMedium:
+                    source: "https://www.themealdb.com/images/media/meals/sywswr1511383814.jpg"
+                    title: "[size=" + str(int(app.scale(11))) + "][color=#ffffff][b] Banana Pancakes[/b][/color][/size]"
+                    category: "[size=10][color=#808080][b]Dessert[/b][/color][/size]"
+                    height: app.scale(150)
+                    size_hint_y: None
+                    recipe_id: "52855"
+                    from_screen: "home"
+                RecipeMedium:
+                    source: "https://www.themealdb.com/images/media/meals/sutysw1468247559.jpg"
+                    title: "[size=" + str(int(app.scale(11))) + "][color=#ffffff][b] Spaghetti Bolognese[/b][/color][/size]"
+                    category: "[size=10][color=#808080][b]Beef[/b][/color][/size]"
+                    height: app.scale(150)
+                    size_hint_y: None
+                    recipe_id: "52770"              
+                    from_screen: "home"
+                RecipeMedium:
+                    source: "https://www.themealdb.com/images/media/meals/vvpprx1487325699.jpg"
+                    title: "[size=" + str(int(app.scale(11))) + "][color=#ffffff][b] Beef Wellington[/b][/color][/size]"
+                    category: "[size=10][color=#808080][b]Beef[/b][/color][/size]"
+                    height: app.scale(150)
+                    size_hint_y: None
+                    recipe_id: "52803"
+                    from_screen: "home"                
+                RecipeMedium:
+                    source: "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg"
+                    title: "[size=" + str(int(app.scale(11))) + "][color=#ffffff][b] Spaghetti alla Carbonara[/b][/color][/size]"
+                    category: "[size=10][color=#808080][b]Pasta[/b][/color][/size]"
+                    height: app.scale(150)
+                    size_hint_y: None
+                    recipe_id: "52982"
+                    from_screen: "home"
+
+<LoadingScreen>:
+    MDSpinner:
+        size_hint: None, None
+        size: app.scale(46), app.scale(46)
+        pos_hint: {'center_x': .5, 'center_y': .5}
+
+<CenteredSpinner>:
+    MDSpinner:
+        size_hint: None, None
+        size: app.scale(46), app.scale(46)
+        pos_hint: {'center_x': .5, 'center_y': .5}
+
+
+<RandomRecipeScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: [app.scale(15), app.scale(20)]
+        size_hint: 1, 1
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'images/random_recipe_bg.png'
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_x: 1
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: app.scale(10)
+            pos_hint: {"top": 1}
+            
+
+            MDIconButton:
+                icon: "arrow-left-drop-circle-outline"
+                theme_icon_color: "Custom"
+                icon_color: "#ffffff"
+                md_bg_color: "#5A1400"
+                icon_size: app.scale(19)
+                pos_hint: {"top": 0.97}
+                on_press: root.manager.current = 'home'
+
+            MDLabel:
+                text_size: self.size
+                halign: "center"
+                valign: "top"
+                bold: True
+                font_size: app.scale(26)
+                text: "Random Recipe"
+                pos_hint: {"top": 0.95}
+                color: 0.3529, 0.07843, 0, 1
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: [0, root.height/2 - app.scale(170), 0, 0]
+            size_hint_y: 1
+            spacing: app.scale(30)
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                
+                FitImage:
+                    source: root.img
+                    size_hint: None, None
+                    size: root.width - 40, ((root.height)/2)-100
+                    fit_mode: "cover"
+                    radius: [app.scale(30), ]
+
+            BoxLayout:
+                orientation: "vertical"
+                padding: [0, app.scale(60), 0, 0]
+                MDLabel:
+                    text_size: self.size
+                    halign: "center"
+                    valign: "top"
+                    bold: True
+                    font_size: app.scale(26)
+                    text: root.title
+                    color: 0.6117, 0.1333, 0, 1
+
+                BoxLayout:
+                    orientation: "horizontal"
+                    height: self.minimum_height
+                    padding: [0, app.scale(50), 0, app.scale(30)]
+                    spacing: app.scale(20)
+
+                    MDFillRoundFlatIconButton: 
+                        size_hint_x: 1
+                        icon: "arrow-right-drop-circle-outline"
+                        text: "View Details"
+                        text_color: "white"
+                        md_bg_color: "#5A1400"
+                        icon_color: "white"
+                        font_size: app.scale(17)
+                        rounded_button: True
+                        on_press: app.load_recipe_detail(root.recipe_id, "random_recipe")
+
+                    MDIconButton:
+                        icon: "reload"
+                        theme_icon_color: "Custom"
+                        icon_color: "#ffffff"
+                        md_bg_color: "#5A1400"
+                        icon_size: app.scale(17)
+                        on_press: app.load_random_recipe()
+
+
+<RecipeDetailScreen>:
+    ScrollView:
+        bar_width: app.scale(5)
+        BoxLayout:
+            orientation: "vertical"
+            padding: [app.scale(15), app.scale(20)]
+            size_hint: 1, None
+            height: self.minimum_height
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint_x: 1
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: app.scale(10)
+                pos_hint: {"top": 1}
+
+                MDIconButton:
+                    icon: "arrow-left-drop-circle-outline"
+                    theme_icon_color: "Custom"
+                    icon_color: "#ffffff"
+                    md_bg_color: "#5A1400"
+                    icon_size: app.scale(19)
+                    pos_hint: {"top": 0.97}
+                    on_press: app.recipe_detail_back()
+
+                MDLabel:
+                    text_size: self.size
+                    halign: "center"
+                    valign: "top"
+                    bold: True
+                    font_size: app.scale(26)
+                    text: "Recipe Details"
+                    pos_hint: {"top": 0.95}
+                    color: 0.3529, 0.07843, 0, 1        
+
+            BoxLayout:
+                orientation: "vertical"
+                padding: [0, app.scale(170), 0, 0]
+                size_hint_y: None
+                height: self.minimum_height
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    
+                    FitImage:
+                        source: root.img
+                        size_hint: None, None
+                        size: root.width - 40, (root.height)/3
+                        fit_mode: "cover"
+                        radius: [app.scale(30), ]
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [0, app.scale(170), 0, 0]
+                MDLabel:
+                    text_size: self.size
+                    halign: "left"
+                    valign: "top"
+                    bold: True
+                    font_size: app.scale(26)
+                    text: root.title
+                    color: 0.6117, 0.1333, 0, 1
+
+            AnchorLayout:
+                anchor_y: "top"
+                anchor_x: "left"
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    BoxLayout:
+                        orientation: "horizontal"
+                        pos_hint: {"top": 1}
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: [app.scale(-12), app.scale(15), 0, app.scale(12)]
+
+                        MDIconButton:
+                            theme_icon_color: "Custom"
+                            icon_color: "#AD8A80"
+                            icon: "food-fork-drink"
+                            icon_size: app.scale(20)
+                            _no_ripple_effect: True
+
+                        MDLabel:
+                            text_size: self.size
+                            halign: "left"
+                            valign: "center"
+                            bold: True
+                            font_size: app.scale(15)
+                            text: root.category
+                            color: "#AD8A80"
+                
+                    AnchorLayout:
+                        anchor_y: "top"
+                        BoxLayout:
+                            orientation: "vertical"
+                            pos_hint: {"top": 1}
+                            padding: [0, app.scale(10), 0, 0]
+
+                            MDSeparator:
+                                size_hint_y: None
+                                height: app.scale(5)
+
+                    BoxLayout:
+                        orientation: "vertical"
+                        size_hint_y: None
+                        height: app.scale(50)
+                        MDLabel:
+                            text_size: self.size
+                            halign: "left"
+                            valign: "center"
+                            bold: True
+                            font_size: app.scale(20)
+                            text: "Ingredients"
+                            color: "#CE9180"
+                    
+            GridLayout:
+                id: recipe_ingredients
+                cols: 2
+                padding: [0, app.scale(190), 0, 0]
+                spacing: [app.scale(10), app.scale(100)]
+                size_hint_y: None
+                height: self.minimum_height
+
+                # RecipeIngredient:
+                #     img: "images/ingredient-1.png"
+                #     title: "Ingredient name"
+
+                # RecipeIngredient:
+                #     img: "images/ingredient-1.png"
+                #     title: "Ingredient name"
+
+                # RecipeIngredient:
+                #     img: "images/ingredient-1.png"
+                #     title: "Ingredient name"
+                
+                # RecipeIngredient:
+                #     img: "images/ingredient-1.png"
+                #     title: "Ingredient name"
+
+                # RecipeIngredient:
+                #     img: "images/ingredient-1.png"
+                #     title: "Ingredient name"
+
+                # RecipeIngredient:
+                #     img: "images/ingredient-1.png"
+                #     title: "Ingredient name"
+
+                # RecipeIngredient:
+                #     img: "images/ingredient-1.png"
+                #     title: "Ingredient name"
+
+                # RecipeIngredient:
+                #     img: "images/ingredient-1.png"
+                #     title: "Ingredient name"
+
+            BoxLayout:
+                orientation: "vertical"
+                padding: [0, app.scale(30), 0, 0]
+                spacing: app.scale(35)
+                pos_hint: {"top": 1}
+                size_hint_y: None
+                height: self.minimum_height
+                MDLabel:
+                    text_size: self.size
+                    halign: "left"
+                    valign: "center"
+                    bold: True
+                    font_size: app.scale(20)
+                    text: "Recipe"
+                    color: "#CE9180"
+                
+                BoxLayout:
+                    orientation: "vertical"
+                    id: recipe_steps
+                    size_hint_y: None
+                    height: self.minimum_height
+                    pos_hint: {"top": 1}
+                    # spacing: 50
+                    # RecipeStep:
+                    #     text: "Step 1 instructions"
+                    # RecipeStep:
+                    #     text: "Step 2 instructions"
+                    # RecipeStep:
+                    #     text: "Step 3 instructions"
+                    # RecipeStep:
+                    #     text: "Step 4 instructions"
+                    # RecipeStep:
+                    #     text: "Step 5 instructions"
+                    # RecipeStep:
+                    #     text: "Step 6 instructions"
+
+                # MDRaisedButton:
+                #     text: "Back to home"
+                #     size_hint_x: 1
+                #     md_bg_color: 1, 0.4039, 0.2392, 1
+                #     on_press: root.manager.current = 'home'
+
+<SearchResultsScreen>:
+    ScrollView:
+        BoxLayout:
+            id: search_results_container
+            orientation: "vertical"
+            pos_hint: {"top": 1}
+            size_hint: (1, None)
+            padding: [app.scale(15), app.scale(20)]
+            height: self.minimum_height
+
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint_x: 1
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: app.scale(10)
+                pos_hint: {"top": 1}
+
+                MDIconButton:
+                    icon: "arrow-left-drop-circle-outline"
+                    theme_icon_color: "Custom"
+                    icon_color: "#ffffff"
+                    md_bg_color: "#5A1400"
+                    icon_size: app.scale(19)
+                    pos_hint: {"top": 1.05}
+                    on_press: app.sm.current = "home"
+
+                MDTextField:
+                    id: search_bar
+                    hint_text: "Search Recipes"
+                    size_hint_x: 1
+                    mode: "round"
+                    icon_left: "magnify"
+                    pos_hint: {"top": 1}
+                    on_text_validate: app.load_search_results(root)
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint: 1, None
+                height: app.scale(30)
+                pos_hint: {"top": 1}
+                padding: [0, app.scale(40), 0, 0]
+                MDLabel:
+                    id: search_results_label
+                    text_size: self.size
+                    halign: "left"
+                    valign: "top"
+                    bold: True
+                    text: '3 search results for "pizza"'
+                    color: 0.3529, 0.07843, 0, 1
+
+            GridLayout:
+                id: search_results_grid
+                cols: 2
+                padding: [0, app.scale(30), 0, 0]
+                size_hint_y: None
+                spacing: [app.scale(15), app.scale(15)]
+
+                # RecipeMedium:
+                #     source: "https://www.themealdb.com/images/media/meals/x0lk931587671540.jpg"
+                #     title: "[size=14][color=#ffffff][b]Pizza Express Margherita[/b][/color][/size]"
+                #     category: "[size=10][color=#808080][b]Miscellaneous[/b][/color][/size]"
+                #     height: 150
+                #     size_hint_y: None
+                #     recipe_id: "53014"
+                #     from_screen: "home"
+                # RecipeMedium:
+                #     source: "https://www.themealdb.com/images/media/meals/x0lk931587671540.jpg"
+                #     title: "[size=14][color=#ffffff][b]Pizza Express Margherita[/b][/color][/size]"
+                #     category: "[size=10][color=#808080][b]Miscellaneous[/b][/color][/size]"
+                #     height: 150
+                #     size_hint_y: None
+                #     recipe_id: "53014"
+                #     from_screen: "home"
+            #NoResults:
+
+<CategoriesScreen>:
+    ScrollView:
+        BoxLayout:
+            orientation: "vertical"
+            pos_hint: {"top": 1}
+            size_hint: (1, None)
+            padding: [app.scale(15), app.scale(20)]
+            height: self.minimum_height
+            spacing: app.scale(10)
+
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint_x: 1
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: app.scale(10)
+                pos_hint: {"top": 1}
+
+                MDIconButton:
+                    icon: "arrow-left-drop-circle-outline"
+                    theme_icon_color: "Custom"
+                    icon_color: "#ffffff"
+                    md_bg_color: "#5A1400"
+                    icon_size: app.scale(19)
+                    pos_hint: {"top": 0.97}
+                    on_press: app.sm.current = "home"
+
+                MDLabel:
+                    text_size: self.size
+                    halign: "center"
+                    valign: "top"
+                    bold: True
+                    font_size: app.scale(26)
+                    text: "Categories"
+                    pos_hint: {"top": 0.97}
+                    color: 0.3529, 0.07843, 0, 1     
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint: 1, None
+                height: self.minimum_height
+                pos_hint: {"top": 1}
+                padding: [0, app.scale(20), 0, app.scale(50)]
+                spacing: app.scale(40)
+                MDTabs:
+                    id: category_tabs
+                    background_color: "#ffffff"
+                    text_color_normal: 0.4666, 0.4666, 0.4666, 1
+                    text_color_active: 0.6117, 0.1333, 0
+                    indicator_color: 0.6117, 0.1333, 0
+                    on_tab_switch: root.on_tab_switch(*args)
+
+                    # Tab:
+                    #     title: "Tab 1"
+
+                    # Tab:
+                    #     title: "Tab 2"  
+
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint: 1, None
+                height: app.scale(30)
+                pos_hint: {"top": 1}
+                padding: [0, app.scale(40), 0, 0]
+                spacing: app.scale(40)
+
+                MDLabel:
+                    id: categories_results_label
+                    text_size: self.size
+                    halign: "left"
+                    valign: "bottom"
+                    bold: True
+                    text: '3 Recipes in Category'
+                    color: 0.3529, 0.07843, 0, 1
+
+            GridLayout:
+                id: categories_results_grid
+                cols: 2
+                padding: [0, app.scale(30), 0, 0]
+                size_hint_y: None
+                spacing: [app.scale(15), app.scale(15)]
